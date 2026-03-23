@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - cicd-setup # 👈 your branch name
+      - cicd-setup # your branch
 
 jobs:
   deploy:
@@ -25,6 +25,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
           source: "image.tar"
           target: "/home/ubuntu/"
 
@@ -34,6 +35,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
           script: |
             docker stop finance-app || true
             docker rm finance-app || true
