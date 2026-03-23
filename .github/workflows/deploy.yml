@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - cicd-setup # your branch
+      - cicd-setup
 
 jobs:
   deploy:
