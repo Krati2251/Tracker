@@ -1,39 +1,15 @@
-name: CI/CD Pipeline
+script: |
+  cd /home/ubuntu
 
-on:
-  push:
-    branches:
-      - main
-      - cicd-setup
-  workflow_dispatch:
+  if [ ! -d "Tracker" ]; then
+    git clone https://github.com/Krati2251/Tracker.git
+  fi
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  cd Tracker
+  git pull
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  docker stop finance-app || true
+  docker rm finance-app || true
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            cd /home/ubuntu
-
-            if [ ! -d "Tracker" ]; then
-              git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-            fi
-
-            cd Tracker
-            git pull
-
-            docker stop finance-app || true
-            docker rm finance-app || true
-
-            docker build -t finance-app .
-            docker run -d -p 8501:8501 --name finance-app finance-app
+  docker build -t finance-app .
+  docker run -d -p 8501:8501 --name finance-app finance-app
